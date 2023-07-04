@@ -67,3 +67,4 @@ db.getCollection(<COLLECTION>).find({ _id: { $gt: objectIdWithTimestamp('2022-11
 - https://docs.mongodb.com/manual/reference/method/db.currentOp/
 - https://www.mongodb.com/blog/post/performance-best-practices-indexing
 - https://www.mongodb.com/blog/post/performance-best-practices-benchmarking (All from the series)
+- https://www.mongodb.com/blog/post/building-with-patterns-a-summary
