@@ -57,6 +57,20 @@ function objectIdWithTimestamp(timestamp) {
 db.getCollection(<COLLECTION>).find({ _id: { $gt: objectIdWithTimestamp('2022-11-08') } });
 ```
 
+## Number of connections per user
+
+```
+db.currentOp(true).inprog.reduce(
+  (accumulator, connection) => {
+    user = connection.effectiveUsers ? connection.effectiveUsers[0].user : "Internal";
+    accumulator[user] = (accumulator[user] || 0) + 1;
+    accumulator["TOTAL_CONNECTION_COUNT"]++;
+    return accumulator;
+  },
+  { TOTAL_CONNECTION_COUNT: 0 }
+)
+```
+
 ## Resources
 
 - https://medium.com/idealo-tech-blog/advanced-mongodb-performance-tuning-2ddcd01a27d2
