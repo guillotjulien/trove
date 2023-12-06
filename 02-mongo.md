@@ -71,6 +71,19 @@ db.currentOp(true).inprog.reduce(
 )
 ```
 
+## Number of connections per IP
+
+```
+db.currentOp(true).inprog.reduce((acc, d) => {
+  if (d.client) {
+      var ip = d.client.substring(0, d.client.length - 6)
+      acc[ip] = (acc[ip] || 0) + 1;
+  }
+
+  return acc;
+}, {})
+```
+
 ## Resources
 
 - https://medium.com/idealo-tech-blog/advanced-mongodb-performance-tuning-2ddcd01a27d2
