@@ -9,6 +9,12 @@
 
 Thanks: https://serverfault.com/questions/679989/most-efficient-way-to-batch-delete-s3-files#comment1200074_917740
 
+### Download multiple files by date from S3
+
+```
+aws s3api list-objects-v2 --bucket <BUCKET_NAME> --query 'Contents[?LastModified>=`2022-03-28`].Key' --prefix <PREFIX> | jq '.[]' | xargs -L1 -I {} aws s3 cp s3://<BUCKET_NAME>/{} .
+```
+
 ## IAM
 
 ### Assume role and export environment variables
