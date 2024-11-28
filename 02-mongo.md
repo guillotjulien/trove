@@ -84,12 +84,78 @@ db.currentOp(true).inprog.reduce(
 ```
 db.currentOp(true).inprog.reduce((acc, d) => {
   if (d.client) {
-      var ip = d.client.substring(0, d.client.length - 6)
-      acc[ip] = (acc[ip] || 0) + 1;
+    var ip = d.client.substring(0, d.client.length - 6)
+    acc[ip] = (acc[ip] || 0) + 1;
   }
 
   return acc;
 }, {})
+```
+
+## Configure Kafka Connect to publish collection change streams to Kafka
+
+```
+name=<UNIQUE_AND_DESCRIPTIVE_CONNECTOR_NAME>
+tasks.max=1
+connector.class=com.mongodb.kafka.connect.MongoSourceConnector
+key.converter=org.apache.kafka.connect.storage.StringConverter
+value.converter=org.apache.kafka.connect.storage.StringConverter
+connection.uri=<MONGO_REPLICASET_URI>
+
+database=<MONGO_DATABASE>
+collection=<MONGO_COLLECTION>
+
+topic.prefix=cleanmgo
+change.stream.full.document=updateLookup
+
+# This extract the documentKey into a field so that it can be used to partition the topic
+transforms=ExtractDocumentKey,ExtractDocumentIdKey
+
+transforms.ExtractDocumentKey.field=documentKey
+transforms.ExtractDocumentKey.type=org.apache.kafka.connect.transforms.ExtractField$Key
+
+# Don't apply transform to heartbeats
+transforms.ExtractDocumentKey.predicate=IsHeatbeat
+transforms.ExtractDocumentKey.negate=true
+
+transforms.ExtractDocumentIdKey.field=_id
+transforms.ExtractDocumentIdKey.type=org.apache.kafka.connect.transforms.ExtractField$Key
+
+# Don't apply transform to heartbeats
+transforms.ExtractDocumentIdKey.predicate=IsHeatbeat
+transforms.ExtractDocumentIdKey.negate=true
+
+predicates=IsHeatbeat
+predicates.IsHeatbeat.type=org.apache.kafka.connect.transforms.predicates.TopicNameMatches
+predicates.IsHeatbeat.pattern=__mongodb_heartbeats
+
+output.format.value=json
+output.json.formatter=com.mongodb.kafka.connect.source.json.formatter.SimplifiedJson
+output.schema.key={ "name": "DocumentKey", "type": "record", "namespace": "mynamespace.mongodb.avro", "fields": [ { "name": "documentKey", "type": { "name": "documentKeyField", "type": "record", "fields": [ { "name": "_id", "type": "string" } ] } } ] }
+output.format.key=schema
+
+# rare updates - make sure we don't run into errors
+heartbeat.interval.ms=3600000
+errors.tolerance=all
+errors.log.enable=true
+errors.log.include.messages=true
+
+# Optionally we can define a pipeline to filter out some documents
+# pipeline=[{ "$match": { "fullDocument.whatever": true } }]
+
+# We can also bootstrap the topic using the current content of the collection
+# copy.existing=true
+# copy.existing.pipeline=[{ "$match": { "whatever": true } }]
+```
+
+## Configure max message size for Kafka Connect
+
+Make sure that `connector.client.config.override.policy=All` is set in Kafka Connect configuration. And follow this [section](05-kafka.md#increase-max-message-size-on-a-topic).
+
+Add the following to the connector configuration and restart the Kafka Connect task:
+```
+producer.override.max.request.size=true
+producer.override.max.request.size=<BYTES_SIZE>
 ```
 
 ## Resources
