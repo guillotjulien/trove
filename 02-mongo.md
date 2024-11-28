@@ -37,6 +37,14 @@ db.<COLLECTION>.aggregate([
 ])
 ```
 
+## Knowing when a document was created in Mongo
+
+`ObjectId` contains a timestamp.
+
+```
+ObjectId('5f16d7acead770dbef558866').getTimestamp()
+```
+
 ## Query by creation date via `_id`
 
 Useful if you don't have an index on a date field.
