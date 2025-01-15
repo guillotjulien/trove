@@ -162,9 +162,8 @@ producer.override.max.request.size=<BYTES_SIZE>
 
 - https://medium.com/idealo-tech-blog/advanced-mongodb-performance-tuning-2ddcd01a27d2
 - https://github.com/idealo/mongodb-slow-operations-profiler (Go profiler is better)
-- https://university.mongodb.com/courses/M201/about
-- https://university.mongodb.com/courses/M312/about
-- https://university.mongodb.com/courses/M320/about
+- https://learn.mongodb.com/courses/ilt-mdb200-mongodb-optimization-and-performance
+- https://learn.mongodb.com/courses/ilt-oa610-primary-session-use-to-create-new-courses
 - https://docs.mongodb.com/manual/reference/method/db.currentOp/
 - https://www.mongodb.com/blog/post/performance-best-practices-indexing
 - https://www.mongodb.com/blog/post/performance-best-practices-benchmarking (All from the series)
