@@ -148,16 +148,6 @@ errors.log.include.messages=true
 # copy.existing.pipeline=[{ "$match": { "whatever": true } }]
 ```
 
-## Configure max message size for Kafka Connect
-
-Make sure that `connector.client.config.override.policy=All` is set in Kafka Connect configuration. And follow this [section](05-kafka.md#increase-max-message-size-on-a-topic).
-
-Add the following to the connector configuration and restart the Kafka Connect task:
-```
-producer.override.max.request.size=true
-producer.override.max.request.size=<BYTES_SIZE>
-```
-
 ## Resources
 
 - https://medium.com/idealo-tech-blog/advanced-mongodb-performance-tuning-2ddcd01a27d2
