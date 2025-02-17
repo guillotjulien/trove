@@ -148,6 +148,22 @@ errors.log.include.messages=true
 # copy.existing.pipeline=[{ "$match": { "whatever": true } }]
 ```
 
+## Get all unique indexes on a database
+
+```
+const allUniqueIndexes = {};
+const collections = db.getCollectionNames();
+for (const collection of collections) {
+    const indexes = db.getCollection(collection).getIndexes();
+    const uniqueIndexes = indexes.filter((index) => index.unique);
+    if (uniqueIndexes.length > 0) {
+        allUniqueIndexes[collection] = uniqueIndexes;
+    }
+}
+
+printjson(allUniqueIndexes)
+```
+
 ## Resources
 
 - https://medium.com/idealo-tech-blog/advanced-mongodb-performance-tuning-2ddcd01a27d2
