@@ -29,3 +29,19 @@ $(aws sts assume-role \
 ```
 
 Thanks: https://stackoverflow.com/a/67636523
+
+## EC2
+
+### Start an instance with SSM enabled (Amazon Linux only)
+
+Need to put this in user data when starting the instance:
+```
+#!/bin/bash
+sudo yum install -y amazon-ssm-agent
+sudo systemctl enable amazon-ssm-agent
+sudo systemctl start amazon-ssm-agent
+```
+
+The instance IAM role should also have the `AmazonSSMManagedInstanceCore` policy attached.
+
+Can then connect to it using this command: `aws ssm start-session --target <INSTANCE_ID>`
