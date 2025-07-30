@@ -45,3 +45,19 @@ sudo systemctl start amazon-ssm-agent
 The instance IAM role should also have the `AmazonSSMManagedInstanceCore` policy attached.
 
 Can then connect to it using this command: `aws ssm start-session --target <INSTANCE_ID>`
+
+## Athena
+
+### Create a Glue table from CSV
+
+```
+create external table if not exists `my_table`(
+  `col_1` string,
+  `col_2` string
+)
+row format serde 'org.apache.hadoop.hive.serde2.lazy.lazysimpleserde'
+stored as inputformat 'org.apache.hadoop.mapred.textinputformat'
+outputformat 'org.apache.hadoop.hive.ql.io.hiveignorekeytextoutputformat'
+location 's3://my_bucket/my_folder'
+tblproperties ('skip.header.line.count'='1')
+```
