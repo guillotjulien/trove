@@ -34,3 +34,9 @@ Host internal-server
 **Note**: `INTERNAL_SERVER_SSH_KEY` needs to be present on the bastion server.
 
 Kudo to https://unix.stackexchange.com/a/41494
+
+## Amazon Linux
+
+### List versions of package
+
+`yum list <package name> --showduplicates`
