@@ -7,7 +7,22 @@
 
 ## Long running query
 
-`db.currentOp({ "active" : true, "secs_running" : { "$gt" : 100 } })` where 100 is in seconds (need write access)
+Where 100 is in seconds (need write access)
+```
+db.getSiblingDB("admin").aggregate([
+  {
+    $currentOp: {
+      allUsers: true,
+      secs_running: { $gt: 100 },
+    },
+  },
+]).toArray()
+```
+
+Sometimes you can't see the operations, even though you are admin on the DB. You can connect directly to the node (most likely the primary) using Mongosh and you'll see them:
+```
+mongosh "<PRIMARY_URI>/admin" --tls --authenticationDatabase admin -u <ADMIN_USER> -p
+```
 
 ## Collection Fragmentation
 
