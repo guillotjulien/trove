@@ -4,8 +4,9 @@
 
 ### Mass delete objects
 
-1. List all objects in bucket: `aws s3api list-objects --output text --bucket <BUCKET_NAME> --prefix <PREFIX> --query 'Contents[].[Key]' | pv -l > BUCKET.keys`
-2. Delete by batches: `tail -n+0 BUCKET.keys | pv -l | grep -v -e "'" | tr '\n' '\0' | xargs -0 -P1 -n1000 bash -c 'aws s3api delete-objects --bucket <BUCKET> --delete "Objects=[$(printf "{Key=%q}," "$@")],Quiet=true"' _`
+1. set `AWS_RETRY_MODE=adaptive` (otherwise a call simply fails after 2 attempts).
+2. List all objects in bucket: `aws s3api list-objects --output text --bucket <BUCKET_NAME> --prefix <PREFIX> --query 'Contents[].[Key]' | pv -l > BUCKET.keys`
+3. Delete by batches: `tail -n+0 BUCKET.keys | pv -l | grep -v -e "'" | tr '\n' '\0' | xargs -0 -P8 -n1000 bash -c 'aws s3api delete-objects --bucket <BUCKET> --delete "Objects=[$(printf "{Key=%q}," "$@")],Quiet=true"' _`
 
 Thanks: https://serverfault.com/questions/679989/most-efficient-way-to-batch-delete-s3-files#comment1200074_917740
 
